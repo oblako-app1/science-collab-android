@@ -75,14 +75,9 @@ def getNightlyUniversalApkPath() {
 }
 
 def getFirebaseAppId() {
-//    def taskNames = gradle.getStartParameter().taskNames.toString()
-//    if(taskNames.contains("RustCryptoNightly")) {
-//        return "1:912726360885:android:94fb99347eaa36d100427c"
-//    } else if (taskNames.contains("KotlinCryptoNightly")) {
-        return "1:912726360885:android:efd8545af52a9f9300427c"
-//    } else {
-//        return ""
-//    }
+    // TODO Science Collab: replace with the App ID of YOUR Firebase project
+    // (Firebase console -> Project settings -> Your apps). Only needed for nightly uploads.
+    return "1:912726360885:android:efd8545af52a9f9300427c"
 }
 static def gitRevision() {
     def cmd = "git rev-parse --short=8 HEAD"
@@ -135,6 +130,7 @@ project.android.buildTypes.all { buildType ->
 ext.abiVersionCodes = ["armeabi-v7a": 1, "arm64-v8a": 2, "x86": 3, "x86_64": 4].withDefault { 0 }
 
 android {
+    // Do NOT change the namespace: it would break all code imports (R class etc.)
     namespace "im.vector.application"
     // Due to a bug introduced in Android gradle plugin 3.6.0, we have to specify the ndk version to use
     // Ref: https://issuetracker.google.com/issues/144111441
@@ -143,7 +139,8 @@ android {
     compileSdk versions.compileSdk
 
     defaultConfig {
-        applicationId "im.vector.app"
+        // Science Collab: new application id (was im.vector.app)
+        applicationId "org.sciencecollab.app"
         // Set to API 21: see #405
         minSdk versions.minSdk
         targetSdk versions.targetSdk
@@ -203,7 +200,7 @@ android {
                 // See https://issuetracker.google.com/issues/171133218
                 output.versionCodeOverride = baseVariantVersion + baseAbiVersionCode
                 print "ABI " + output.getFilter(OutputFile.ABI) + " \t-> VersionCode = " + output.versionCode + "\n"
-                output.outputFileName = output.outputFileName.replace("vector-app", "vector")
+                output.outputFileName = output.outputFileName.replace("vector-app", "sciencecollab")
             }
         }
 
@@ -247,7 +244,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
-            resValue "string", "app_name", "Element Classic - dbg"
+            resValue "string", "app_name", "Science Collab - dbg"
 
             if (project.hasProperty("coverage")) {
                 testCoverageEnabled = project.coverage == "true"
@@ -255,7 +252,7 @@ android {
         }
 
         release {
-            resValue "string", "app_name", "Element Classic"
+            resValue "string", "app_name", "Science Collab"
             postprocessing {
                 // FIXME Set to true.
                 removeUnusedCode false
